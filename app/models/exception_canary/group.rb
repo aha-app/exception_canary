@@ -21,6 +21,14 @@ module ExceptionCanary
     MATCH_TYPE_REGEX = 20
     MATCH_TYPES = [MATCH_TYPE_EXACT, MATCH_TYPE_REGEX]
 
+    def self.find_group_for_exception(se)
+      self.where(title: se.title).first || self.where(match_type: MATCH_TYPE_REGEX).find { |r| r.matches?(se) }
+    end
+
+    def self.create_new_group_for_exception(se)
+      self.create!(name: se.short_title, action: ACTION_NOTIFY, match_type: MATCH_TYPE_EXACT, value: se.title)
+    end
+
     def notify?
       action == ACTION_NOTIFY
     end

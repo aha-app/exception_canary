@@ -42,8 +42,7 @@ module ExceptionCanary
     end
 
     def suppress_exception?(se)
-      se.group = ExceptionCanary::Group.find { |r| r.matches?(se) }
-      se.group ||= ExceptionCanary::Group.create!(name: se.short_title, action: ExceptionCanary::Group::ACTION_NOTIFY, match_type: ExceptionCanary::Group::MATCH_TYPE_EXACT, value: se.title)
+      se.group = ExceptionCanary::Group.find_group_for_exception(se) || ExceptionCanary::Group.create_new_group_for_exception(se)
       se.save!
       se.group.suppress?
     end
