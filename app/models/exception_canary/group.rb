@@ -22,7 +22,7 @@ module ExceptionCanary
     MATCH_TYPES = [MATCH_TYPE_EXACT, MATCH_TYPE_REGEX]
 
     def self.find_group_for_exception(se)
-      self.where(name: se.title).first || self.where(match_type: MATCH_TYPE_REGEX).find { |r| r.matches?(se) }
+      self.where(value: se.title).first || self.where(match_type: MATCH_TYPE_REGEX).find { |r| r.matches?(se) }
     end
 
     def self.create_new_group_for_exception(se)
