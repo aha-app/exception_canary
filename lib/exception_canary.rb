@@ -7,6 +7,8 @@ require 'exception_canary/version'
 
 module ExceptionCanary
   class << self
+    attr_accessor :suppress_callback
+
     def root_url
       root =
         if Rails.application.config.respond_to?(:exception_canary_root)
@@ -42,6 +44,7 @@ module ExceptionCanary
     end
 
     def suppress_exception?(se)
+      return true if ExceptionCanary.suppress_callback && ExceptionCanary.suppress_callback.call(se) == true
       se.group = ExceptionCanary::Group.find_group_for_exception(se) || ExceptionCanary::Group.create_new_group_for_exception(se)
       se.save!
       se.group.suppress?
