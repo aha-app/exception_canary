@@ -26,28 +26,61 @@ module ExceptionCanary
       end
     end
 
-    def create_exception!(exception, options)
+    def create_ruby_exception!(exception, options)
       variables = {}
-      unless options[:env].nil? || options[:env]['action_controller.instance'].nil?
-        options[:env]['action_controller.instance'].instance_variables.each do |v|
-          k = v.to_s
-          variables[k] = options[:env]['action_controller.instance'].instance_variable_get(k) unless k.include? '@_'
+      variables[:env] = {}
+      variables[:request] = {}
+      variables[:data] = options[:data] || {}
+      variables[:server] = {
+        process: $$,
+        server: `hostname`.chomp
+      }
+      
+      if options[:env]
+        request = ActionDispatch::Request.new(options[:env])
+        variables[:request] = {
+          url: request.url,
+          ip_address: request.remote_ip,
+          parameters: request.filtered_parameters.inspect,
+          controller: inspect_object(options[:env]['action_controller.instance'])
+        }
+        request.filtered_env.each do |key, value|
+          variables[:env][key] = inspect_object(value)
         end
       end
-      variables.merge!(env['exception_notifier.exception_data'] || {}) if options[:env]
-      variables.merge!(options[:data]) if options[:data]
-   
-      title = "(#{exception.class}) \"#{exception.message}\""
-      title = "#{ENV['action_controller.instance']} #{title}" if ENV['action_controller.instance']
-      backtrace = exception.backtrace.join("\n") if exception.backtrace
-      ExceptionCanary::StoredException.create! title: title, backtrace: backtrace, variables: variables, klass: exception.class.to_s
+                  
+      backtrace = ExceptionCanary::StoredException.sanitize_ruby_backtrace(exception.backtrace)
+      
+      byebug
+      
+      stored_exception = ExceptionCanary::StoredException.new(
+        message: exception.message,
+        exception_class: exception.class.to_s,
+        backtrace: backtrace, 
+        variables: variables
+      )
+      stored_exception.group = ExceptionCanary::Group.
+        where(fingerprint: stored_exception.compute_fingerprint).
+        first_or_create!(
+          name: stored_exception.title
+        )
+      stored_exception.save!
     end
 
     def suppress_exception?(se)
       return true if ExceptionCanary.suppress_callback && ExceptionCanary.suppress_callback.call(se) == true
-      se.group = ExceptionCanary::Group.find_group_for_exception(se) || ExceptionCanary::Group.create_new_group_for_exception(se)
-      se.save!
       se.group.suppress?
+    end
+    
+    def inspect_object(object)
+      case object
+      when Hash, Array
+        object.inspect
+      when ActionController::Base
+        "#{object.controller_name}##{object.action_name}"
+      else
+        object.to_s
+      end
     end
   end
 end

@@ -1,7 +1,8 @@
 class ExceptionNotifier
   class Notifier < ActionMailer::Base
     def exception_notification(env, exception, options = {})
-      e = ExceptionCanary.create_exception!(exception, options)
+      options.update(env: env)
+      e = ExceptionCanary.create_ruby_exception!(exception, options)
       return false if ExceptionCanary.suppress_exception?(e)
 
       prepend_view_path "#{Gem.loaded_specs['exception_canary'].full_gem_path}/app/views"
@@ -23,7 +24,8 @@ class ExceptionNotifier
     end
 
     def background_exception_notification(exception, options = {})
-      e = ExceptionCanary.create_exception!(exception, options)
+      options.update(env: {})
+      e = ExceptionCanary.create_ruby_exception!(exception, options)
       return false if ExceptionCanary.suppress_exception?(e)
 
       prepend_view_path "#{Gem.loaded_specs['exception_canary'].full_gem_path}/app/views"

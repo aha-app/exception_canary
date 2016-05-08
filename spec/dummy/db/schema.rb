@@ -11,30 +11,44 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150615201509) do
+ActiveRecord::Schema.define(:version => 20160507154801) do
 
-  create_table "exception_canary_groups", :force => true do |t|
-    t.text     "name"
-    t.integer  "action"
-    t.integer  "match_type"
-    t.text     "value"
-    t.text     "note"
-    t.boolean  "is_auto_generated", :default => true
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+  create_table "exception_canary_comments", :force => true do |t|
+    t.string   "commentable_type",              :null => false
+    t.integer  "commentable_id",   :limit => 8, :null => false
+    t.text     "body"
+    t.integer  "user_id",          :limit => 8
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
+  add_index "exception_canary_comments", ["commentable_id", "commentable_type"], :name => "index_exception_canary_comments_on_commentable"
+
+  create_table "exception_canary_groups", :force => true do |t|
+    t.string   "fingerprint",         :null => false
+    t.text     "name"
+    t.integer  "notification_action"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "exception_canary_groups", ["fingerprint"], :name => "index_exception_canary_groups_on_fingerprint"
+
   create_table "exception_canary_stored_exceptions", :force => true do |t|
-    t.integer  "group_id",    :limit => 8
-    t.text     "title"
+    t.integer  "group_id",        :limit => 8, :null => false
+    t.string   "fingerprint",                  :null => false
+    t.text     "message"
+    t.string   "exception_class"
     t.text     "backtrace"
     t.text     "environment"
     t.text     "variables"
-    t.string   "klass"
-    t.datetime "created_at",               :null => false
-    t.datetime "updated_at",               :null => false
+    t.integer  "user_id",         :limit => 8
+    t.string   "ip_address"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
+  add_index "exception_canary_stored_exceptions", ["fingerprint"], :name => "index_exception_canary_stored_exceptions_on_fingerprint"
   add_index "exception_canary_stored_exceptions", ["group_id"], :name => "index_exception_canary_stored_exceptions_on_group_id"
 
 end
