@@ -50,9 +50,7 @@ module ExceptionCanary
       end
                   
       backtrace = ExceptionCanary::StoredException.sanitize_ruby_backtrace(exception.backtrace)
-      
-      byebug
-      
+
       stored_exception = ExceptionCanary::StoredException.new(
         message: exception.message,
         exception_class: exception.class.to_s,
@@ -65,6 +63,7 @@ module ExceptionCanary
           name: stored_exception.title
         )
       stored_exception.save!
+      stored_exception
     end
 
     def suppress_exception?(se)
