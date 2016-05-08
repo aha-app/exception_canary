@@ -1,68 +1,24 @@
 <% content_for :title, "Stored Exception: #{@stored_exception.title}" %>
 
-<h4>Exception Message</h4>
-<%= simple_format @stored_exception.title %>
-<h5>Class: <%= @stored_exception.klass %></h5>
+<h4><%= @stored_exception.title %></h4>
 
-<% if @stored_exception.group %>
-  <hr>
-  <h4>Group</h4>
-  <p><%= link_to @stored_exception.group.name, @stored_exception.group %></p>
-  <p>
-    Group action: 
-    <% if @stored_exception.group.notify? %>
-      <b>Notify</b><br><%= link_to 'Switch to Suppress', group_path(@stored_exception.group, group: { action: ExceptionCanary::Group::ACTION_SUPPRESS }), method: :put, class: 'btn' %>
-    <% else %>
-      <b>Suppress</b><br><%= link_to 'Switch to Notify', group_path(@stored_exception.group, group: { action: ExceptionCanary::Group::ACTION_NOTIFY }), method: :put, class: 'btn' %>
-    <% end %>
-  </p>
-<% end %>
 
-<hr>
-<h4>Backtrace</h4>
-<div class='backtrace'>
-  <%= simple_format @stored_exception.backtrace %>
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#backtrace" data-toggle="tab">Backtrace</a></li>
+  <li><a href="#data" data-toggle="tab">Data</a></li>
+  <li><a href="#environment" data-toggle="tab">Environment</a></li>
+</ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane active" id="backtrace">
+    <%= render partial: "backtrace"%>
+  </div>
+  <div class="tab-pane" id="data">
+    <%= render partial: "variables", locals: {variables: @stored_exception.variables[:request]} %>
+    <%= render partial: "variables", locals: {variables: @stored_exception.variables[:data]} %>
+    <%= render partial: "variables", locals: {variables: @stored_exception.variables[:server]} %>
+  </div>
+  <div class="tab-pane" id="environment">
+    <%= render partial: "variables", locals: {variables: @stored_exception.variables[:env]} %>
+  </div>
 </div>
-<%= link_to 'Show More', '#', id: 'show-more' %>
-
-<% if @stored_exception.variables %>
-  <hr>
-  <h4>Variables</h4>
-  <table class='table'>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @stored_exception.variables.each do |k, v| %>
-        <tr>
-          <td><%= k %></td>
-          <td><%= v %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>
-
-<% if @stored_exception.environment %>
-  <hr>
-  <h4>Environment</h4>
-  <table class='table'>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @stored_exception.environment.each do |k, v| %>
-        <tr>
-          <td><%= k %></td>
-          <td><%= v %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>

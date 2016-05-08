@@ -1,33 +1,15 @@
 <table class='table'>
   <thead>
     <tr>
-      <th>Timestamp</th>
       <th>Message</th>
-      <th>Class</th>
-      <% unless defined?(hide_group) && hide_group %>
-        <th>Group</th>
-      <% end %>
+      <th>When</th>
     </tr>
   </thead>
   <tbody>
     <% @stored_exceptions.each do |se| %>
       <tr>
-        <td><%= link_to format_time(se.created_at), se %></td>
-        <td><%= se.short_title %></td>
-        <td><%= se.klass %></td>
-        <% unless defined?(hide_group) && hide_group %>
-          <td>
-            <% if se.group %>
-              <% if se.group.name == se.title %>
-                <%= link_to se.group.id, se.group %>
-              <% else %>
-                <%= link_to se.group.name, se.group %>
-              <% end %>
-            <% else %>
-              None
-            <% end %>
-          </td>
-        <% end %>
+        <td><%= link_to(se.title, se) %></td>
+        <td><%= format_time(se.created_at) %></td>
       </tr>
     <% end %>
   </tbody>
