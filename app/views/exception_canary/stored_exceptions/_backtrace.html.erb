@@ -1,0 +1,9 @@
+<div class="canary-backtrace well">
+  <% @stored_exception.backtrace.each do |line| %>
+    <div>
+      <span class="canary-backtrace-file"><%= line[:f] %></span>:<span class="canary-backtrace-line"><%= line[:l] %></span>
+      in
+      <span class="canary-backtrace-method"><%= line[:m]%></span>
+    </div>
+  <% end %>
+</div>

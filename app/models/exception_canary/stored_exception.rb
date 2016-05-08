@@ -48,8 +48,13 @@ module ExceptionCanary
     end
     
     def self.sanitize_ruby_backtrace(bt)
+      bt = Rails.backtrace_cleaner.send(:filter, bt)
+      
+      root = Rails.root.to_s
+      
       bt.collect do |line|
         file, line, method = line.split(":")
+        file.slice!(root)
         method.gsub!(/(^in `)/, "").gsub!("'$")
         {f: file, l: line, m: method}
       end

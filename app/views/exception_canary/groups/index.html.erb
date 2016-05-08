@@ -4,18 +4,14 @@
   <thead>
     <tr>
       <th><%= sortable 'name' %></th>
-      <th><%= sortable 'action' %></th>
-      <th><%= sortable 'value', 'Exception Message' %></th>
-      <th><%= sortable 'exceptions_count', 'Matched Exceptions' %></th>
-      <th><%= sortable 'most_recent_exception', 'Most Recent Exception' %></th>
+      <th><%= sortable 'exceptions_count', 'Exceptions' %></th>
+      <th><%= sortable 'most_recent_exception', 'Last' %></th>
     </tr>
   </thead>
   <tbody>
     <% @groups.each do |group| %>
       <tr <%= 'class="warning"' if group.notify? %>>
         <td><%= link_to group.name, group %></td>
-        <td><%= action_name(group.action) %></td>
-        <td><%= group.short_value %></td>
         <td><%= group.exceptions_count %></td>
         <td><%= group.most_recent_exception.nil? ? 'None' : format_time(group.most_recent_exception) %></td>
       </tr>

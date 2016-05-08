@@ -10,7 +10,7 @@ module ExceptionCanary
 
     def show
       @group = Group.find(params[:id])
-      @stored_exceptions = @group.stored_exceptions.page(params[:page])
+      @stored_exception = @group.stored_exceptions.last
     end
 
     def edit

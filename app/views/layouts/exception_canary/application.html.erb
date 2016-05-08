@@ -7,25 +7,22 @@
     <%= csrf_meta_tags %>
   </head>
 <body class='exception-canary'>
-  <nav>
-    <div class='right'>
-      <ul>
-        <li>
-          <%= link_to 'Groups', groups_path %>
-        </li>
-        <li class='divider'></li>
-        <li>
-          <%= link_to 'Exceptions', stored_exceptions_path %>
-        </li>
-      </ul>
-    </div>
-    <hr>
-  </nav>
-  <main>
+  <ul class="nav nav-pills">
+    <li class="active">
+      <%= link_to("Dashboard", groups_path) %>
+    </li>
+    <li>
+      <%= link_to("Groups", groups_path) %>
+    </li>
+    <li>
+      <%= link_to("Exceptions", stored_exceptions_path) %>
+    </li>
+  </ul>
+  
     <% if flash[:notice] %>
       <div class='alert alert-success'><%= flash[:notice] %></div>
     <% end %>
+
     <%= yield %>
-  </main>
 </body>
 </html>

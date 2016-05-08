@@ -1,6 +1,6 @@
 module ExceptionCanary
   class Group < ActiveRecord::Base
-    has_many :stored_exceptions
+    has_many :stored_exceptions, order: :created_at
 
     validates :name, presence: true
     validates :fingerprint, presence: true
