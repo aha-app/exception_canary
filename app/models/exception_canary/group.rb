@@ -8,6 +8,8 @@ module ExceptionCanary
 
     attr_accessible :name, :fingerprint, :notification_action
 
+    scope :search, -> (term) { where('name ILIKE ?', "%#{term}%") }
+    
     calculated :exceptions_count, -> { 'select count(*) from exception_canary_stored_exceptions where exception_canary_stored_exceptions.group_id = exception_canary_groups.id' }
     calculated :most_recent_exception, -> { 'select max(created_at) from exception_canary_stored_exceptions where exception_canary_stored_exceptions.group_id = exception_canary_groups.id' }
 
@@ -35,6 +37,10 @@ module ExceptionCanary
 
     def suppress?
       notification_action == NOTIFICATION_SUPPRESS
+    end
+    
+    def self.delete_unused_groups!
+      Group.where("not exists (select 'x' from exception_canary_stored_exceptions where exception_canary_stored_exceptions.group_id = exception_canary_groups.id)").destroy_all
     end
   end
 end

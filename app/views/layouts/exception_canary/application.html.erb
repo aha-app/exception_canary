@@ -7,14 +7,24 @@
     <%= csrf_meta_tags %>
   </head>
 <body class='exception-canary'>
+  
+  <form class='form-search pull-right' action='<%= groups_path %>' method='get'>
+    <input type='text' name='query' class='input-medium search-query' value='<%= params[:query] %>'>
+    <% if params[:query].present? %>
+      <%= link_to 'Clear', groups_path, class: 'btn' %>
+    <% end %>
+  </form>
+
+  
+  
   <ul class="nav nav-pills">
-    <li class="active">
+    <li class="<%= 'active' if controller_name == 'dashboard' %>">
       <%= link_to("Dashboard", groups_path) %>
     </li>
-    <li>
+    <li class="<%= 'active' if controller_name == 'groups' %>">
       <%= link_to("Groups", groups_path) %>
     </li>
-    <li>
+    <li class="<%= 'active' if controller_name == 'stored_exceptions' %>">
       <%= link_to("Exceptions", stored_exceptions_path) %>
     </li>
   </ul>

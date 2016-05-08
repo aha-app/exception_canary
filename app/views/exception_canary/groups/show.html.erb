@@ -25,16 +25,21 @@
 
   <ul class="nav nav-tabs">
     <li class="active">
-      <a href="#">Backtrace</a>
+      <a href="#backtrace" data-toggle="tab">Backtrace</a>
     </li>
-    <li><a href="#">Exceptions</a></li>
-    <li><a href="#">...</a></li>
+    <li><a href="#exceptions" data-toggle="tab">Exceptions</a></li>
+    <li><a href="#" data-toggle="tab">...</a></li>
   </ul>
-  
-  <%= render partial: "exception_canary/stored_exceptions/backtrace" %>
+   
+  <div class="tab-content">
+    <div class="tab-pane active" id="backtrace">
+      <%= render partial: "exception_canary/stored_exceptions/backtrace" %>
+    </div>
+    <div class="tab-pane active" id="exceptions">
+      <%= render partial: 'exception_canary/stored_exceptions/table', locals: { stored_exceptions: @group.stored_exceptions.limit(50) } %>
+    </div>
+  </div>
   
 <% else %>
   <p>No exceptions in this group</p>
 <% end %>
-
-<%= @group.stored_exceptions.first.try(:inspect)%>

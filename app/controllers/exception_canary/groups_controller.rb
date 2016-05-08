@@ -5,7 +5,14 @@ module ExceptionCanary
     helper_method :sort_column, :sort_direction
 
     def index
-      @groups = Group.scoped.calculated(:exceptions_count, :most_recent_exception).order(sort_param).page(params[:page])
+      scope =
+        if params[:query].present?
+          Group.search(params[:query])
+        else
+          Group.unscoped
+        end
+      
+      @groups = scope.calculated(:exceptions_count, :most_recent_exception).order(sort_param).page(params[:page])
     end
 
     def show

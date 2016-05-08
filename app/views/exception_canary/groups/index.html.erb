@@ -4,7 +4,7 @@
   <thead>
     <tr>
       <th><%= sortable 'name' %></th>
-      <th><%= sortable 'exceptions_count', 'Exceptions' %></th>
+      <th><%= sortable 'exceptions_count', 'Count' %></th>
       <th><%= sortable 'most_recent_exception', 'Last' %></th>
     </tr>
   </thead>
@@ -12,8 +12,10 @@
     <% @groups.each do |group| %>
       <tr <%= 'class="warning"' if group.notify? %>>
         <td><%= link_to group.name, group %></td>
-        <td><%= group.exceptions_count %></td>
-        <td><%= group.most_recent_exception.nil? ? 'None' : format_time(group.most_recent_exception) %></td>
+        <td>
+          <span class="badge"><%= group.exceptions_count %></span>
+        </td>
+        <td style="white-space: nowrap;"><%= group.most_recent_exception.nil? ? 'None' : format_time_ago(Time.parse(group.most_recent_exception + " UTC")) %></td>
       </tr>
     <% end %>
   </tbody>

@@ -1,13 +1,15 @@
 <table class='table'>
   <thead>
     <tr>
+      <th>Group</th>
       <th>Message</th>
       <th>When</th>
     </tr>
   </thead>
   <tbody>
-    <% @stored_exceptions.each do |se| %>
+    <% stored_exceptions.each do |se| %>
       <tr>
+        <td><%= link_to(group_id(se.group_id), se.group)%></td>
         <td><%= link_to(se.title, se) %></td>
         <td><%= format_time(se.created_at) %></td>
       </tr>
@@ -15,4 +17,6 @@
   </tbody>
 </table>
 
-<%= paginate @stored_exceptions %>
+<% if defined? stored_exceptions.current_page %>
+  <%= paginate stored_exceptions %>
+<% end %>

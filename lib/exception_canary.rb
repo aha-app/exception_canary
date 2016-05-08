@@ -57,12 +57,7 @@ module ExceptionCanary
         backtrace: backtrace, 
         variables: variables
       )
-      stored_exception.group = ExceptionCanary::Group.
-        where(fingerprint: stored_exception.compute_fingerprint).
-        first_or_create!(
-          name: stored_exception.title
-        )
-      stored_exception.save!
+      stored_exception.regroup!
       stored_exception
     end
 

@@ -10,23 +10,37 @@ module ExceptionCanary
     serialize :environment
     serialize :variables
 
-    scope :search, -> (term) { where('title LIKE ?', "%#{term}%") }
-    
     before_create :set_fingerprint
     
     def set_fingerprint
-      self.fingerprint = compute_fingerprint
+      self.fingerprint ||= compute_fingerprint
+    end
+    
+    def fingerprint_sanitize(s)
+      s.gsub(/[0-9]{2,100}/, "").gsub(/[0-9a-f]{5,40}/, "")
     end
     
     def compute_fingerprint
       bt = self.backtrace || []
       cleaned_backtrace = bt.collect do |line|
-        [line[:f], line[:m]].join(":")
+        filename = fingerprint_sanitize(line[:f])
+        method = fingerprint_sanitize(line[:m])
+        [filename, method].join(":")
       end.join(":")
       
       fingerprint_data = [cleaned_backtrace, self.exception_class]
       
       Digest::SHA1.hexdigest(fingerprint_data.join(":"))
+    end
+    
+    def regroup!
+      self.fingerprint = compute_fingerprint
+      self.group = ExceptionCanary::Group.
+        where(fingerprint: self.fingerprint).
+        first_or_create!(
+          name: self.title
+        )
+      save!
     end
     
     def backtrace_summary

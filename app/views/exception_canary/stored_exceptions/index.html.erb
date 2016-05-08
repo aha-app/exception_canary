@@ -1,11 +1,3 @@
 <% content_for :title, 'Stored Exceptions' %>
 
-<form class='form-search' action='<%= stored_exceptions_path %>' method='get'>
-  <input type='text' name='term' class='input-medium search-query' value='<%= params[:term] %>'>
-  <button type='submit' class='btn'>Search</button>
-  <% if params[:term].present? %>
-    <%= link_to 'Clear', stored_exceptions_path, class: 'btn' %>
-  <% end %>
-</form>
-
 <%= render partial: 'table', locals: { stored_exceptions: @stored_exceptions } %>
