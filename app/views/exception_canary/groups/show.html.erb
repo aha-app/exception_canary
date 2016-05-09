@@ -9,11 +9,11 @@
 <% if @stored_exception %>
 
   <span>
-    <b>First seen</b> <%= format_time(@group.stored_exceptions.first.created_at) %>
+    <b>First seen</b> <%= format_time_ago(@group.stored_exceptions.first.created_at) %> ago
   </span>
 
   <span>
-    <b>Last seen</b> <%= format_time(@stored_exception.created_at) %>
+    <b>Last seen</b> <%= format_time_ago(@stored_exception.created_at) %> ago
   </span>
 
   <span>

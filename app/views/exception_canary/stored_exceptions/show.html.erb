@@ -1,6 +1,9 @@
 <% content_for :title, "Stored Exception: #{@stored_exception.title}" %>
 
-<h4><%= @stored_exception.title %></h4>
+<h4>
+  <%= link_to(group_id(@stored_exception.group_id), @stored_exception.group)%> 
+  <%= @stored_exception.title %>
+</h4>
 
 
 <ul class="nav nav-tabs">

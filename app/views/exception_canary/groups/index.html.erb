@@ -11,7 +11,7 @@
   <tbody>
     <% @groups.each do |group| %>
       <tr <%= 'class="warning"' if group.notify? %>>
-        <td><%= link_to group.name, group %></td>
+        <td class="exception-canary-truncated"><%= link_to group.name, group %></td>
         <td>
           <span class="badge"><%= group.exceptions_count %></span>
         </td>

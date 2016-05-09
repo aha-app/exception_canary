@@ -10,8 +10,8 @@
     <% stored_exceptions.each do |se| %>
       <tr>
         <td><%= link_to(group_id(se.group_id), se.group)%></td>
-        <td><%= link_to(se.title, se) %></td>
-        <td><%= format_time(se.created_at) %></td>
+        <td class="exception-canary-truncated"><%= link_to(se.title, se) %></td>
+        <td style="white-space: nowrap;"><%= format_time_ago(se.created_at) %></td>
       </tr>
     <% end %>
   </tbody>

@@ -8,16 +8,17 @@ module ExceptionCanary
     def format_time_ago(time)
       distance = (Time.now.utc - time).round
       distance_in_minutes = (distance / 60.0).round
-      case distance_in_minutes
-      when 0..1
-        "#{distance} secs"
-      when 2..59
-        "#{distance_in_minutes} mins"
-      when 60..(23*60)
-        "#{(distance_in_minutes/60.0).round} hours"
-      else
-        "#{(distance_in_minutes/(24*60.0)).round} days"
-      end
+      s = case distance_in_minutes
+        when 0..1
+          "#{distance} secs"
+        when 2..59
+          "#{distance_in_minutes} mins"
+        when 60..(23*60)
+          "#{(distance_in_minutes/60.0).round} hours"
+        else
+          "#{(distance_in_minutes/(24*60.0)).round} days"
+        end
+      "<span title='#{format_time(time)}'>#{s}</span>".html_safe
     end
     
     def group_id(id)

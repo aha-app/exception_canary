@@ -20,6 +20,9 @@ class GroupViaFingerprints < ActiveRecord::Migration
       t.integer :user_id, limit: 8
       t.string :ip_address
       
+      # The source of the exception (RUBY OR JAVASCRIPT)
+      t.integer :source
+      
       t.timestamps null: false
     end
     add_index "exception_canary_stored_exceptions", [:group_id]
